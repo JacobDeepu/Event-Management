@@ -1,0 +1,11 @@
+{
+    "require": {
+        "symfony/http-foundation": "^4.0",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": { 
+            "Src\\": "src/"
+        }
+    }
+}
