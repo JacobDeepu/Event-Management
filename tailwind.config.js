@@ -10,6 +10,9 @@ module.exports = {
                 body: ["Inter"],
                 sans: ["Roboto"],
             },
+            backgroundImage: {
+                'hero-bg': "url('/public/assets/images/main-bg.jpg')",
+            }
         },
     },
     plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],

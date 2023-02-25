@@ -2,13 +2,15 @@
 
 namespace Src\Controllers;
 
+use Src\Models\Event;
 use Symfony\Component\HttpFoundation\Response;
 
 class Controller
 {
     public static function index()
     {
-        $html =  self::render_template('templates/welcome.php', [NULL]);
+        $events = Event::get();
+        $html =  self::render_template('templates/welcome.php', ['events'=>$events]);
         return new Response($html);
     }
 

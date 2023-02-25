@@ -2,39 +2,40 @@
 
 namespace Src\Models;
 
-class User
+class Venue
 {
-    public static function create($user)
+    public static function create($venue)
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "INSERT INTO users (name, email, phone, password, created_at) VALUES (:name, :email, :phone, :password, :created_at)";
-        $connection->prepare($sql)->execute($user);
+        $sql = "INSERT INTO venues (name, nearby, status) VALUES (:name, :nearby, :status)";
+        $connection->prepare($sql)->execute($venue);
         $model->close_database_connection($connection);
-        return "User Created";
     }
-
-    public static function get_user($email)
+    public static function get()
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "SELECT id, name, password FROM users WHERE email=:email";
+        $sql = "SELECT id, name FROM venues";
         $statement = $connection->prepare($sql);
-        $statement->execute(['email' => $email]);
-        $data = $statement->fetch();
+        $statement->execute();
+        $data = $statement->fetchAll();
+        $venues = [];
+        foreach ($data as $row) {
+            $venues[] = $row;
+        }
         $model->close_database_connection($connection);
-        return $data;
+        return $venues;
     }
-
     public static function getById($id)
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "SELECT * FROM users WHERE id=:id";
+        $sql = "SELECT id, name FROM venues WHERE id=:id";
         $statement = $connection->prepare($sql);
         $statement->execute(['id' => $id]);
-        $user = $statement->fetch();
+        $venue = $statement->fetch();
         $model->close_database_connection($connection);
-        return $user;
+        return $venue;
     }
 }

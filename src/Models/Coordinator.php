@@ -2,39 +2,40 @@
 
 namespace Src\Models;
 
-class User
+class Coordinator
 {
-    public static function create($user)
+    public static function create($coordinator)
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "INSERT INTO users (name, email, phone, password, created_at) VALUES (:name, :email, :phone, :password, :created_at)";
-        $connection->prepare($sql)->execute($user);
+        $sql = "INSERT INTO coordinators (name, email, phone, status) VALUES (:name, :email, :phone, :status)";
+        $connection->prepare($sql)->execute($coordinator);
         $model->close_database_connection($connection);
-        return "User Created";
     }
-
-    public static function get_user($email)
+    public static function get()
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "SELECT id, name, password FROM users WHERE email=:email";
+        $sql = "SELECT id, name FROM coordinators";
         $statement = $connection->prepare($sql);
-        $statement->execute(['email' => $email]);
-        $data = $statement->fetch();
+        $statement->execute();
+        $data = $statement->fetchAll();
+        $coordinators = [];
+        foreach ($data as $row) {
+            $coordinators[] = $row;
+        }
         $model->close_database_connection($connection);
-        return $data;
+        return $coordinators;
     }
-
     public static function getById($id)
     {
         $model = new Model();
         $connection = $model->open_database_connection();
-        $sql = "SELECT * FROM users WHERE id=:id";
+        $sql = "SELECT id, name FROM coordinators WHERE id=:id";
         $statement = $connection->prepare($sql);
         $statement->execute(['id' => $id]);
-        $user = $statement->fetch();
+        $venue = $statement->fetch();
         $model->close_database_connection($connection);
-        return $user;
+        return $venue;
     }
 }

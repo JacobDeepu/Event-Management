@@ -2,18 +2,17 @@
 
 namespace Src\Controllers;
 
+use Src\Models\Registration;
 use Symfony\Component\HttpFoundation\Response;
 use Src\Models\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class AuthController
 {
     public static function index()
     {
         $html = Controller::render_template('templates/auth/login.php', [NULL]);
-
         return new Response($html);
     }
 
@@ -21,21 +20,22 @@ class AuthController
     {
         $email = $request->request->get('email');
         $password = $request->request->get('password');
-
         $data = [];
         if (!empty($email) && !empty($password)) {
             $data = User::get_user($email, $password);
         }
-        $session = new Session();
-        $session->start();
+
         if (count($data) && password_verify($password, $data['password'])) {
-            $session->set('id', $data['id']);
-            $session->set('name', $data['name']);
+            if (isset($_GET['event_id'])) {
+                $register = [
+                    'event_id' => $_GET['event_id'],
+                    'user_id' => $data['id']
+                ];
+                Registration::create($register);
+            }
             return new RedirectResponse('/');
         } else {
-            $flashes = $session->getFlashBag();
-            $flashes->add('error', 'Failed to login');
-            $html = Controller::render_template('templates/auth/login.php', ['flashes' => $flashes]);
+            $html = Controller::render_template('templates/auth/login.php', [NULL]);
             return new Response($html);
         }
     }
@@ -67,6 +67,6 @@ class AuthController
             User::create($user);
         }
 
-        return new RedirectResponse('/login/');;
+        return new RedirectResponse('/login/');
     }
 }
